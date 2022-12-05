@@ -1,70 +1,73 @@
-//CSL201 DATA STRUCTURES LAB ----- ANANDHA KRISHNAN S
-#include<stdio.h>
-#include<stdlib.h>
-void push();
-void pop();
-void display();
-int a[100];
-int top=-1;
-int main()
+//CSL201 DATA STRUCTURES LAB ----- ANANDHA KRISHNAN
+#include <stdio.h>
+
+#define MAX 100
+
+int stack[MAX], top = -1; // stack array and top
+
+// Push function to insert element
+void push(int data)
 {
-	int n;
-	while(n!=4)
-	{
-		printf("enter your choice\n1.push\n2.pop\n3.display\n4.exit\n");
-		scanf("%d",&n);
-		switch(n)
-		{
-			case 1:push();
-			break;
-			case 2:pop();
-			break;
-			case 3:display();
-			break;
-			case 4:exit(0);
-			break;
-		}
-	}
-	return(0);
+    if (top == MAX - 1)
+        printf("\nStack overflow");
+    else
+        stack[++top] = data;
 }
-void push()
-{
-	int data;
-	if(top==10-1)
-	{
-		printf("overflow\n");
-	}
-	else
-	{
-		printf("push number");
-		scanf("%d",&data);
-		top++;
-		a[top]=data;
-	}
-}
+
+// Pop function to pop element
 void pop()
 {
-	if(top==-1)
-	{
-		printf("underflow\n");
-	}
-	else
-	{
-		printf("popped number is %d",a[top]);
-		top--;
-	}
+    int del;
+    if (top == -1)
+        printf("\nStack empty");
+    else
+    {
+        del = stack[top--];
+        printf("\nDeleted: %d", del);
+    }
 }
+
+// To print elements of stack
 void display()
 {
-	int i;
-	if(top==-1)
-	{
-		printf("underflow\n");
-	}
-	else
-	{
-		printf("present elements are\n");
-	for(i=top;i>=0;i--)
-		printf("%d\n",a[i]);
-	}
-}	
+    if (top == -1)
+        printf("\nStack empty");
+    else
+    {
+        printf("\n");
+        for (int i = 0; i <= top; i++)
+        {
+            printf("%d ", stack[i]);
+        }
+    }
+}
+
+int main()
+{
+    int ch, element;
+    do
+    {
+        printf("\n\nChoose operation");
+        printf("\n1.Push");
+        printf("\n2.Pop");
+        printf("\n3.Display stack");
+        printf("\n4.Exit\n");
+        scanf("%d", &ch);
+        switch (ch)
+        {
+        case 1:
+            printf("\nEnter element to insert ");
+            scanf("%d", &element);
+            push(element);
+            break;
+        case 2:
+            pop();
+            break;
+        case 3:
+            display();
+            break;
+        }
+    } while (ch < 4);
+
+    return 0;
+}
