@@ -1,126 +1,71 @@
 //CSL201 DATA STRUCTURES LAB ----- ANANDHA KRISHNAN
 #include<stdio.h>
-#include<stdlib.h>
+#define MAX 20
+#define SET 25
 struct node
 {
-    int data,exp;
-    struct node* link;
-};
-struct node* poly1,*poly2,*respoly;
-
+	int row,col,value;
+}a[SET];
+int mat[MAX][MAX];
+void sparse(int ,int);
 void display();
-void insertlast(int ,int,int);
-void multiplicator();
 
 int main()
-{
-	int i,j,k,data;
-	printf("Enter highest degree of polynomial A:");
-	scanf("%d",&j);
-	for(i=j;i>=0;i--)
-	{	printf("enter the coef of term with exp[%d] :",i);
-		scanf("%d",&data);
-		insertlast(i,1,data);
-	}
-	printf("\n");
-	printf("enter highest degree of polynomial B:");
-	scanf("%d",&k);
-	for(i=k;i>=0;i--)
-	{	printf("Enter the coef of term with exp[%d] :",i);
-		scanf("%d",&data);
-		insertlast(i,2,data);
-	}
-	
-	multiplicator();
-	display();
-
-}
-
-
-void multiplicator()
-{	int coef, sumexp;
-	struct node*temp1=poly1,*temp2;
-	while(temp1!=NULL)
+{	int r,c;
+	printf("enter the no of rows:");
+	scanf("%d",&r);
+	printf("enter the no of columns:");
+	scanf("%d",&c);
+	printf("enter the matrix:\n");
+	for(int i=0;i<r;i++)
 	{
-		temp2=poly2;
-		while(temp2!=NULL)
+		for(int j=0;j<c;j++)
 		{
-			coef=((temp1->data)*(temp2->data));
-			sumexp=((temp1->exp)+(temp2->exp));
-			insertlast(sumexp,3,coef);
-			temp2=temp2->link;
+			printf("[%d][%d] : ",i,j);
+			scanf("%d",&mat[i][j]);
 		}
-		temp1=temp1->link;
 	}
+	sparse(r,c);
+	display();
 }
 
-
-
+void sparse(int r,int c)
+{	int count=0;
+		for(int i=0;i<r;i++)
+		{
+			for(int j=0;j<c;j++)
+			{
+				if((mat[i][j])!=0)
+				{
+					count++;	
+				}
+			}
+		}
+		a[0].row=r;
+		a[0].col=c;
+		a[0].value=count;
+		int k=1;
+		for(int i=0;i<r;i++)
+		{
+			for(int j=0;j<c;j++)
+			{
+				if((mat[i][j])!=0)
+				{
+					a[k].row=i;
+					a[k].col=j;
+					a[k].value=mat[i][j];
+					k++;	
+				}
+			}
+		}
+}
 void display()
-{
-    struct node* temp,*temp1;
-    int f;
-    temp=respoly;
-    temp1=respoly;
-    printf("the result  is:\n");
-    while(temp!=NULL)
-    {
-      while(temp1->link!=NULL)
-      {
-        if(temp->exp==temp1->link->exp)
-        {
-          f=temp->data;
-          temp->data=temp1->link->data+f;
-          temp1->link=temp1->link->link;
-          }
-          else
-          temp1=temp1->link;
-         } 
-          temp=temp->link;
-          temp1=temp;
-          
-          }
-          temp=respoly;
-      while(temp!=NULL)
-      {
-        printf("%dx^[%d] ", temp->data,temp->exp);
-        temp=temp->link;
-    }
-    printf("\n");
 
-}
-
-void insertlast(int i,int opt,int data)
-{
-    struct node* newnode,*head,*temp;
-    newnode=(struct node*)malloc(sizeof(struct node));
-    newnode->link=NULL;
-    newnode->exp=i;
-    newnode->data=data;
-    
-    if(opt==1)
-    {
-    	head=poly1;
-    }
-    else if(opt ==2)
-    	head=poly2;
-    else
-    {	head=respoly;}
-    
-    temp=head;
-    
-    if((head==NULL)&&(opt==1))
-    {
-    	poly1=newnode;
-    }
-    else if((head==NULL)&&(opt==2))
-    	poly2=newnode;
-    else if((head==NULL)&&(opt==3))
-    	respoly=newnode;
-    else{
-    	while(temp->link!=NULL)
-    	{
-    	    temp=temp->link;
-    	}
-   		 temp->link=newnode;}
+{	int i=0;
+	printf("The matrix is\n");
+	for(int i=1;i<a[0].value+1;i++)
+	{
+		
+		printf("%6d %6d %8d\n",a[i].row,a[i].col,a[i].value);
+	}
 }
