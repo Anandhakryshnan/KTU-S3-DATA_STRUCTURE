@@ -61,7 +61,7 @@ void sparse(int r,int c)
 void display()
 
 {	int i=0;
-	printf(" rows:%d   cols:%d   values:%d\n",a[i].row,a[i].col,a[i].value);
+	printf(" %6d  %6d  %8d\n",a[i].row,a[i].col,a[i].value);
 	for(int i=1;i<a[0].value+1;i++)
 	{
 		printf("%6d %6d %8d\n",a[i].row,a[i].col,a[i].value);
