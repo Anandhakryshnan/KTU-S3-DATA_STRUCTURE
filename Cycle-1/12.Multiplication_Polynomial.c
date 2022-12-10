@@ -1,150 +1,126 @@
 //CSL201 DATA STRUCTURES LAB ----- ANANDHA KRISHNAN
-#include <stdio.h>
-#include <stdlib.h>
-
-// Node contains power,coeff and link to next node
-struct Node
+#include<stdio.h>
+#include<stdlib.h>
+struct node
 {
-    int power, coeff;
-    struct Node *link;
+    int data,exp;
+    struct node* link;
 };
+struct node* poly1,*poly2,*respoly;
 
-// Additional functions for input and output
-struct Node *insertNode(struct Node *, int, int);
-struct Node *inputPoly(struct Node *, int);
-void display(struct Node *);
+void display();
+void insertlast(int ,int,int);
+void multiplicator();
 
-// ======= FUNCTION TO MULTIPLY 2 POLYNOMIALS ============ //
-struct Node *Multiply(struct Node *poly1, struct Node *poly2)
-{
-    struct Node *prod = NULL;
-    int coeff, power;
-    for (struct Node *i = poly1; i != NULL; i = i->link)
-        for (struct Node *j = poly2; j != NULL; j = j->link)
-        {
-            coeff = i->coeff * j->coeff;           // coefficients are multiplied
-            power = i->power + j->power;           // powers are added
-            prod = insertNode(prod, coeff, power); // and inserted into product linked list
-        }
-    return prod;
-}
-
-// ========= FUNCTION TO INSERT A NODE INTO RESULT ========== //
-struct Node *insertNode(struct Node *prod, int coeff, int power)
-{
-    struct Node *curr = prod;
-    while (curr != NULL) // Frst, traversing through the product list
-    {
-        if (curr->power == power) // and checking if any power matches
-        {
-            curr->coeff += coeff; // if yes, then coefficents are added
-            return prod;          // And return out of the function
-        }
-        curr = curr->link;
-    }
-    // If it reaches here, it means that no term with the given power exists,
-    // Hence a new node must be inserted in the appropriate position
-    struct Node *newNode = (struct Node *)malloc(sizeof(struct Node)); // creating a new node
-    newNode->coeff = coeff;
-    newNode->power = power;
-    newNode->link = NULL;
-
-    if (prod == NULL)   // If it is the first node in list
-        return newNode; // Then it is the head node, return it
-
-    // Otherwise, traverse the list till the correct position is found and then insert it
-    curr = prod;
-    struct Node *prev = NULL;
-    struct Node *next = NULL;
-    while (curr != NULL && power < curr->power) // Traversing till current power less than the power in list (to maintain descending order)
-    {
-        prev = curr; // pointer to previous node
-        curr = curr->link;
-        next = curr; // pointer to next node
-    }
-    if (prev == NULL) // If previous node is NULL,it means it is the highest power, then it should be the first element in list
-    {
-        newNode->link = prod;
-        prod = newNode;
-    }
-    else // Otherwise, it is inserted in its appropriate position
-    {
-        newNode->link = next;
-        prev->link = newNode;
-    }
-    return prod;
-}
-
-// ========== MAIN FUNCTION ========= //
 int main()
 {
-    struct Node *head1 = NULL, *head2 = NULL, *prod = NULL;
-    int size1;
-    int size2;
+	int i,j,k,data;
+	printf("Enter highest degree of polynomial A:");
+	scanf("%d",&j);
+	for(i=j;i>=0;i--)
+	{	printf("enter the coef of term with exp[%d] :",i);
+		scanf("%d",&data);
+		insertlast(i,1,data);
+	}
+	printf("\n");
+	printf("enter highest degree of polynomial B:");
+	scanf("%d",&k);
+	for(i=k;i>=0;i--)
+	{	printf("Enter the coef of term with exp[%d] :",i);
+		scanf("%d",&data);
+		insertlast(i,2,data);
+	}
+	
+	multiplicator();
+	display();
 
-    printf("\nEnter number of terms of first polynomial  ");
-    scanf("%d", &size1);
-    if (size1 < 1)
+}
+
+
+void multiplicator()
+{	int coef, sumexp;
+	struct node*temp1=poly1,*temp2;
+	while(temp1!=NULL)
+	{
+		temp2=poly2;
+		while(temp2!=NULL)
+		{
+			coef=((temp1->data)*(temp2->data));
+			sumexp=((temp1->exp)+(temp2->exp));
+			insertlast(sumexp,3,coef);
+			temp2=temp2->link;
+		}
+		temp1=temp1->link;
+	}
+}
+
+
+
+void display()
+{
+    struct node* temp,*temp1;
+    int f;
+    temp=respoly;
+    temp1=respoly;
+    printf("the result  is:\n");
+    while(temp!=NULL)
     {
-        printf("\nInvalid size");
-        return 0;
+      while(temp1->link!=NULL)
+      {
+        if(temp->exp==temp1->link->exp)
+        {
+          f=temp->data;
+          temp->data=temp1->link->data+f;
+          temp1->link=temp1->link->link;
+          }
+          else
+          temp1=temp1->link;
+         } 
+          temp=temp->link;
+          temp1=temp;
+          
+          }
+          temp=respoly;
+      while(temp!=NULL)
+      {
+        printf("%dx^[%d] ", temp->data,temp->exp);
+        temp=temp->link;
     }
-    head1 = inputPoly(head1, size1);
-
-    printf("\nEnter number of terms of second polynomial  ");
-    scanf("%d", &size2);
-    if (size2 < 1)
-    {
-        printf("\nInvalid size");
-        return 0;
-    }
-    head2 = inputPoly(head2, size2);
-
-    printf("\nFirst polynomial: ");
-    display(head1);
-    printf("\nSecond polynomial: ");
-    display(head2);
-    
-    printf("\nResult of Multiplication: ");
-    prod = Multiply(head1, head2);
-    display(prod);
-
     printf("\n");
-    return 0;
+
 }
 
-// ========== Additional functions ============= //
-// Function to input a polynomial
-struct Node *inputPoly(struct Node *head, int size)
+void insertlast(int i,int opt,int data)
 {
-    struct Node *ptr = NULL;
-    int power, coeff;
-    printf("\nEnter the coeffiecent and power of polynomial, in descending order of power");
-    printf("\nFor example: 3X^(5) + 4x^(2) + x + 6 is entered as 3 5 4 2 1 1 6 0\n");
-    for (int i = 0; i < size; i++)
+    struct node* newnode,*head,*temp;
+    newnode=(struct node*)malloc(sizeof(struct node));
+    newnode->link=NULL;
+    newnode->exp=i;
+    newnode->data=data;
+    
+    if(opt==1)
     {
-        scanf("%d", &coeff);
-        scanf("%d", &power);
-        struct Node *newNode = (struct Node *)malloc(sizeof(struct Node));
-        newNode->power = power;
-        newNode->coeff = coeff;
-        newNode->link = NULL;
-        if (head == NULL)
-            head = newNode;
-        else
-            ptr->link = newNode;
-        ptr = newNode;
+    	head=poly1;
     }
-    return head;
-}
-
-// Function to display polynomial
-void display(struct Node *ptr)
-{
-    while (ptr != NULL)
+    else if(opt ==2)
+    	head=poly2;
+    else
+    {	head=respoly;}
+    
+    temp=head;
+    
+    if((head==NULL)&&(opt==1))
     {
-        ptr->power != 0 ? printf(" %dx^(%d)", ptr->coeff, ptr->power) : printf(" %d", ptr->coeff);
-        (ptr->link != NULL && ptr->link->coeff > 0) ? printf(" +") : printf("");
-        ptr = ptr->link;
+    	poly1=newnode;
     }
+    else if((head==NULL)&&(opt==2))
+    	poly2=newnode;
+    else if((head==NULL)&&(opt==3))
+    	respoly=newnode;
+    else{
+    	while(temp->link!=NULL)
+    	{
+    	    temp=temp->link;
+    	}
+   		 temp->link=newnode;}
 }
