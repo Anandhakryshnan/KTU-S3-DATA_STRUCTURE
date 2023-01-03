@@ -2,7 +2,7 @@
 
 #include <stdio.h>
 
-#define SIZE 13
+#define SIZE 7
 
 
 int hashTable[SIZE] = {0};
